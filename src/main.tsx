@@ -11,6 +11,7 @@ import {SignUp} from "@/pages/sign-up";
 import {SignIn} from "@/pages/sign-in";
 import {Orders} from "@/pages/orders";
 import {PaymentStatus} from "@/pages/payment-status";
+import {AuthProvider} from "@/contexts/auth";
 
 const queryClient = new QueryClient()
 
@@ -34,8 +35,11 @@ const router = createBrowserRouter([{
     path: '*', element: <div>404</div>,
 }])
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router}/>
-    </QueryClientProvider>
-</React.StrictMode>,)
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+    <React.StrictMode>
+        <QueryClientProvider client={queryClient}>
+            <AuthProvider>
+                <RouterProvider router={router}/>
+            </AuthProvider>
+        </QueryClientProvider>
+    </React.StrictMode>,)
