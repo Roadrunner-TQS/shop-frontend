@@ -2,6 +2,7 @@ import React from "react";
 import {Container} from "@/components/container";
 import {Product as ProductType} from "@/types";
 import {ProductCard} from "@/components/product-card";
+import {useAuth} from "@/contexts/auth";
 
 
 interface ProductProps {
@@ -9,30 +10,31 @@ interface ProductProps {
 
 export const Product: React.FunctionComponent<ProductProps> = (props) => {
 
+    const {user} = useAuth()
     const mockProducts: ProductType[] = [
         {
-            id: 1,
+            id: "1",
             name: "Product 1",
             description: "Description 1",
             price: 100,
             image: "https://picsum.photos/seed/1/400/300",
         },
         {
-            id: 2,
+            id: "2",
             name: "Product 2",
             description: "Description 2",
             image: "https://picsum.photos/seed/2/400/300",
             price: 200,
         },
         {
-            id: 3,
+            id: "3",
             name: "Product 3",
             description: "Description 3",
             image: "https://picsum.photos/seed/3/400/300",
             price: 300,
         },
         {
-            id: 4,
+            id: "4",
             name: "Product 4",
             description: "Description 4",
             image: "https://picsum.photos/seed/4/400/300",
@@ -58,8 +60,7 @@ export const Product: React.FunctionComponent<ProductProps> = (props) => {
                     amet mattis vulputate.</p>
                 <div className={"flex flex-col items-end"}>
                     <p className={"text-4xl font-bold text-accent"}>123,00€</p>
-
-                    <button className={"btn btn-primary w-48"}>Add Cart</button>
+                    { user && <button className={"btn btn-primary w-48"}>Add Cart</button>}
                 </div>
 
             </div>
