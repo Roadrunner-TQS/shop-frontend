@@ -62,7 +62,6 @@ export const Payment: React.FunctionComponent<PaymentProps> = (props) => {
                         </Field>
                         <ErrorMessage name={"pickUpService"} component={"div"} className={"text-error"}/>
 
-                        {/*Select the PickUpPoint*/}
                         <label className="label">
                             <span className="label-text">PickUp Point</span>
                         </label>
