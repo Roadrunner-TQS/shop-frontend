@@ -1,6 +1,7 @@
 import {Navbar} from "@/components/navbar";
 import * as Yup from "yup";
 import {ErrorMessage, Field, Form, Formik} from "formik";
+import {Link} from "react-router-dom";
 
 interface SignInProps {
 }
@@ -45,6 +46,10 @@ export const SignIn: React.FunctionComponent<SignInProps> = (props) => {
                         </div>
                     </Form>
                 </Formik>
+                <div className={"w-full mx-auto"}>
+                    Have you registered yet?
+                    <Link to={"/signup"} className={"text-primary hover:underline-offset-1"}> Sign Up now!</Link>
+                </div>
             </div>
         </>;
     }
