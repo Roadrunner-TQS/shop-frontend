@@ -12,25 +12,26 @@ import {SignIn} from "@/pages/sign-in";
 import {Orders} from "@/pages/orders";
 import {PaymentStatus} from "@/pages/payment-status";
 import {AuthProvider} from "@/contexts/auth";
+import {ProtectedRoute} from "@/components/protected-route";
 
 const queryClient = new QueryClient()
 
 const router = createBrowserRouter([{
     path: '/', element: <Home/>,
 }, {
-    path: '/product', element: <Product/>,
+    path: '/product/:id', element: <Product/>,
 }, {
-    path: '/cart', element: <Cart/>
+    path: '/cart', element: <ProtectedRoute page={Cart}/>
 }, {
-    path: '/payment', element: <Payment/>
+    path: '/payment', element: <ProtectedRoute page={Payment}/>
 }, {
     path: '/signup', element: <SignUp/>
 }, {
     path: '/signin', element: <SignIn/>
 }, {
-    path: '/orders', element: <Orders/>
+    path: '/orders', element: <ProtectedRoute page={Orders}/>
 }, {
-    path: '/payment/status', element: <PaymentStatus/>
+    path: '/payment/status', element: <ProtectedRoute page={PaymentStatus}/>
 }, {
     path: '*', element: <div>404</div>,
 }])
@@ -42,4 +43,4 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
                 <RouterProvider router={router}/>
             </AuthProvider>
         </QueryClientProvider>
-    </React.StrictMode>,)
+    </React.StrictMode>)

@@ -1,55 +1,114 @@
 import {Navbar} from "@/components/navbar";
+import {useAuth} from "@/contexts/auth";
+import {useQuery} from "react-query";
+import axios from "axios";
+import {CANCEL, ORDERS, RETURN} from "@/urls";
+import {Order, OrderItem} from "@/types";
+import moment from "moment";
 
 interface OrdersProps {
 }
 
 export const Orders: React.FunctionComponent<OrdersProps> = (props) => {
+
+    const {token} = useAuth()
+
+    const {data, status, refetch} = useQuery<Order[]>({
+        queryKey: ["orders"],
+        queryFn: async () => {
+            const {data} = await axios.get(ORDERS, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            return data;
+        }
+    })
+
+    const cancelOrder = (id: string) => async () => {
+        await axios.put(CANCEL, {}, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+            params: {
+                id: id
+            }
+        })
+        await refetch()
+    }
+
+    const calculateTotal = (items: OrderItem[]) => {
+        let total = 0
+        items.forEach((item) => {
+            total += item.book.price * item.quantity
+        })
+        return total
+    }
+
+    //TODO: Return not working
+    const returnOrder = (id: string) => async () => {
+        await axios.put(RETURN, {}, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+            params: {
+                id: id
+            }
+        })
+        await refetch()
+    }
+
+
     return <>
         <Navbar/>
         <div className="overflow-x-auto w-9/12 mx-auto mt-5">
             <h1 className={"text-5xl font-bold text-primary mb-3"}>My Orders</h1>
-            <div className="overflow-x-auto">
-                <table className="table table-zebra w-full">
-                    {/* head */}
-                    <thead>
-                    <tr>
-                        <th></th>
-                        <th>Date</th>
-                        <th>Content</th>
-                        <th>Status</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {/* row 1 */}
-                    <tr>
-                        <th>1</th>
-                        <td>22/12/2023</td>
-                        <td>Quality Control Specialist</td>
-                        <td><div className={"badge badge-lg badge-success"}>Shipped</div></td>
-                    </tr>
-                    {/* row 2 */}
-                    <tr>
-                        <th>2</th>
-                        <td>22/12/2023</td>
-                        <td >
-                            <div className="flex items-center space-x-3">
-                            1x Quality Control Specialist<br/>
-                            2x Tax Accountant<br/>
-                            3x Tax Accountant<br/>
+            {status === "loading" && <p>Loading...</p>}
+            {status === "error" && <p>Error</p>}
+            {status === "success" && data.map((order) => <>
+                    <div className="card">
+                        <p className={"text-2xl font-medium"}>Content</p>
+                        {order.items.map((item) => (
+                            <div key={item.book.id} className={"flex flex-row justify-between"}>
+                                <img src={item.book.imageUrl} alt={item.book.title}
+                                     className={"w-20 h-20 object-cover"}
+                                />
+                                <p>{item.book.title}</p>
+                                <p>{item.book.author.firstName} {item.book.author.lastName}</p>
+                                <p>{item.quantity}x{item.book.price}€</p>
                             </div>
-                        </td>
-                        <td><div className={"badge badge-lg badge-success"}>Shipped</div> </td>
-                    </tr>
-                    {/* row 3 */}
-                    <tr>
-                        <th>3</th>
-                        <td>22/12/2023</td>
-                        <td>Tax Accountant</td>
-                        <td><div className={"badge badge-lg badge-success"}>Shipped</div></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+                        ))}
+                        <p className={"text-lg font-medium"}>Total: {calculateTotal(order.items)}€</p>
+                        <hr className={"my-2"}/>
+                        <p className={"text-2xl font-medium"}>Status</p>
+                        {order.orderStatus.map((status) => (
+                            <div key={status.status} className={"flex flex-row space-x-2 items-center"}>
+                                <p>{moment(status.timestamp).format('MMMM Do YYYY h:mm:ss a')}</p>
+                                <div className={"badge badge-info"}>{status.status}</div>
+                            </div>
+                        ))}
+                        <hr className={"my-2"}/>
+                        <p className={"text-2xl font-medium"}>Pick Up Point</p>
+                        <p>{order.pickUpLocation.name}</p>
+                        <p>{order.pickUpLocation.address}</p>
+
+                        {order.orderStatus[order.orderStatus.length - 1].status === "PENDING" && (
+                            <button className="collapse-toggle btn btn-error"
+                                    onClick={cancelOrder(order.trackingId)}
+                            >Cancel Order
+                            </button>)
+                        }
+
+                        {order.orderStatus[order.orderStatus.length - 1].status === "DELIVERED" && (
+                            <button className="collapse-toggle btn btn-success"
+                                    onClick={returnOrder(order.trackingId)}
+                            >Order Delivered
+                            </button>)
+                        }
+                    </div>
+
+                </>
+            )}
         </div>
     </>;
 };

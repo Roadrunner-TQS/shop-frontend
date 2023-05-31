@@ -1,20 +1,23 @@
-import {Product} from "@/types";
+import {Book} from "@/types";
 import {Link} from "react-router-dom";
+import React from "react";
 
-interface ProductCardProps {
-    product: Product;
+interface BookCardProps {
+    book: Book;
 }
 
-export const ProductCard: React.FunctionComponent<ProductCardProps> = ({product}) => {
-    return <Link to={"/product"}>
-        <div key={product.id} className="card card-compact bg-base-100 shadow-xl">
-            <figure><img src={product.image} alt="Shoes"/></figure>
+export const ProductCard: React.FunctionComponent<BookCardProps> = ({book}) => {
+    return <Link to={`/product/${book.id}`}>
+        <div key={book.id} className="card card-compact bg-base-100 shadow-xl">
+            <figure><img src={book.imageUrl} alt="Shoes"/></figure>
             <div className="card-body">
-                <h2 className="card-title">{product.name}</h2>
-                <p className={"text-xl text-primary"}>{product.price}€</p>
-                <p>{product.description}</p>
+                <h2 className="card-title">{book.title}</h2>
+                <p className={"text-xl text-primary"}>{book.price}€</p>
+                <p>{book.description}</p>
                 <div className="card-actions items-center place-content-between">
-                    <div className="badge badge-outline">Fashion</div>
+                    {book.categories.map((item)=> (
+                        <div key={item.slug} className="badge badge-outline">{item.name}</div>
+                    ))}
                     <button className="btn btn-primary">Buy Now</button>
                 </div>
             </div>

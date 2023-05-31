@@ -24,7 +24,7 @@ export interface Book {
     pages: number;
     description: string;
     imageUrl: string;
-    categores: Category[];
+    categories: Category[];
 }
 
 export interface Category {
@@ -56,27 +56,15 @@ export interface Payment {
 }
 
 export interface OrderItem {
-    id: string;
     book: Book;
     quantity: number;
 }
 
 export interface OrderStatus {
     id: string;
-    status: Status;
-    timetamp: string;
-
-
+    status: string;
+    timestamp: string;
 }
-
-enum Status {
-    SHIPPING = "SHIPPING",
-    DELIVERED = "DELIVERED",
-    AVAILABLE = "AVAILABLE",
-    RETURNED = "RETURNED",
-    FORGOTTEN = "FORGOTTEN",
-}
-
 export interface PickUpService {
     id: string;
     name: string;
@@ -89,6 +77,7 @@ export interface PickUpLocation {
     slug: string;
     latitude: number;
     longitude: number;
+    address: string;
     pickUpService: PickUpService;
 }
 
@@ -97,8 +86,9 @@ export interface Order {
     client: Client;
     date: string;
     payment: Payment;
-    orderItems: OrderItem[];
+    items: OrderItem[];
     orderStatus: OrderStatus[];
     pickUpLocation: PickUpLocation;
     pickUpService: PickUpService;
+    trackingId: string;
 }

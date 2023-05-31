@@ -1,4 +1,4 @@
-import {Client} from "@/types";
+import {Client, OrderItem} from "@/types";
 import React, {useMemo, useState} from "react";
 
 export interface AuthProps {}
@@ -9,8 +9,8 @@ export interface ClientContext {
   setToken: (token: string) => void;
   login: (auth: Client) => void;
   logout: () => void;
-  cart: string[];
-  setCart: (cart: string[]) => void;
+  cart: OrderItem[];
+  setCart: (cart: OrderItem[]) => void;
 }
 
 export const AuthContext = React.createContext<ClientContext>({} as ClientContext);
@@ -18,11 +18,14 @@ export const AuthContext = React.createContext<ClientContext>({} as ClientContex
 export const AuthProvider: React.FC<AuthProps> = ({children}: React.PropsWithChildren<{}>) => {
   const [user, setUser] = useState<Client | null>(null);
   const [token, setToken] = useState<string>("")
-  const [cart, setCart] = useState<string[]>([] as string[])
+  const [cart, setCart] = useState<OrderItem[]>([] as OrderItem[])
   const login = (user: Client) => {
     setUser(user);
   }
-  const logout = () => setUser(null);
+  const logout = () => {
+    setUser(null);
+    setToken("")
+  }
 
 
   const authCtx = useMemo<ClientContext>(():ClientContext => ({
