@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8090/api'
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api'
 export const GET_BOOK = (id: string|undefined): string => BASE_URL + '/book/' + id
 
 export const GET_BOOKS = (limit: number) => `${BASE_URL}/books?limit=${limit}`
