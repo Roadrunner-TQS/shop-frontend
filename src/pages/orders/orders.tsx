@@ -2,7 +2,7 @@ import {Navbar} from "@/components/navbar";
 import {useAuth} from "@/contexts/auth";
 import {useQuery} from "react-query";
 import axios from "axios";
-import {CANCEL, ORDERS, RETURN} from "@/urls";
+import {CANCEL, ORDERS} from "@/urls";
 import {Order, OrderItem} from "@/types";
 import moment from "moment";
 
@@ -45,17 +45,8 @@ export const Orders: React.FunctionComponent<OrdersProps> = (props) => {
         return total
     }
 
-    //TODO: Return not working
-    const returnOrder = (id: string) => async () => {
-        await axios.put(RETURN, {}, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
-            params: {
-                id: id
-            }
-        })
-        await refetch()
+    const isCancellable = (status: string) => {
+        return status === "SHIPPING" || status === "PENDING"
     }
 
 
@@ -92,17 +83,10 @@ export const Orders: React.FunctionComponent<OrdersProps> = (props) => {
                         <p>{order.pickUpLocation.name}</p>
                         <p>{order.pickUpLocation.address}</p>
 
-                        {order.orderStatus[order.orderStatus.length - 1].status === "PENDING" && (
+                        { isCancellable(order.orderStatus[order.orderStatus.length - 1].status) && (
                             <button className="collapse-toggle btn btn-error"
                                     onClick={cancelOrder(order.trackingId)}
                             >Cancel Order
-                            </button>)
-                        }
-
-                        {order.orderStatus[order.orderStatus.length - 1].status === "DELIVERED" && (
-                            <button className="collapse-toggle btn btn-success"
-                                    onClick={returnOrder(order.trackingId)}
-                            >Order Delivered
                             </button>)
                         }
                     </div>

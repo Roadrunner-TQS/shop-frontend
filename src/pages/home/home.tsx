@@ -6,19 +6,24 @@ import {useQuery} from "react-query";
 
 interface HomeProps {
 }
+
 export const Home: React.FunctionComponent<HomeProps> = (props) => {
-    const {data, isSuccess} = useQuery({
+    const {data, status} = useQuery({
             queryKey: 'books',
-            queryFn: () => axios.get(GET_BOOKS(5)),
+            queryFn: () => axios.get(GET_BOOKS),
         }
     )
 
     return <Container>
-        {isSuccess ?
-        <ProductList products={data.data}/>
+        {status === 'success' ?
+            <ProductList products={data.data}/>
             :
-            <div>ERROR</div>
+            <div>Loading</div>
         }
+        {status === 'error' &&
+            <div>Error</div>
+        }
+
     </Container>;
 };
 

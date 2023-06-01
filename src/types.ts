@@ -91,4 +91,5 @@ export interface Order {
     pickUpLocation: PickUpLocation;
     pickUpService: PickUpService;
     trackingId: string;
+    status: string;
 }
