@@ -1,7 +1,7 @@
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api'
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8090/api'
 export const GET_BOOK = (id: string|undefined): string => BASE_URL + '/book/' + id
 
-export const GET_BOOKS = (limit: number) => `${BASE_URL}/books?limit=${limit}`
+export const GET_BOOKS = `${BASE_URL}/books`
 
 export const SIGN_UP = `${BASE_URL}/auth/signup`
 
